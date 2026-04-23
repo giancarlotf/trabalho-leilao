@@ -161,7 +161,7 @@ def analise(url:str, driver_name:str, rep_time:float, delay:float, refresh:bool,
             if refresh:
                 driver.refresh()
 
-            log("INFO", f"Execução: [{id+1}]")
+            log("INFO", f"Execução [{id+1}]")
             current_value = search(driver, xpath)
 
             if current_value is None:
