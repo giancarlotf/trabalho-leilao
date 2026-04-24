@@ -1,3 +1,5 @@
+from send_email import send
+
 from datetime import datetime
 
 from selenium import webdriver
@@ -13,29 +15,43 @@ from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
 # Script JavaScript executado dentro do navegador para gerar automaticamente um XPath
-get_XPath =  """
-            function getXPath(element) {
-                if (element.id)
-                    return '//*[@id="' + element.id + '"]';
+get_XPath = """
+            const getXPath = (element) => {
+                if (element.id) {
+                    return `//*[@id="${element.id}"]`
+                }
 
-                if (element.className)
-                    return '//' + element.tagName.toLowerCase() + '[contains(normalize-space(.), "' + element.textContent.trim() + '")]';
+                const parts = []
 
-                return null;
+                while (element && element.nodeType === 1) {
+                    let tag = element.tagName.toLowerCase()
+
+                    if (element.className) {
+                        const classes = element.className.trim().split(/\s+/)
+                        const classCondition = classes.map(c => `contains(@class, "${c}")`).join(" and ")
+                        parts.unshift(`${tag}[${classCondition}]`)
+                        break
+                    }
+
+                    let index = 1
+                    let sibling = element
+
+                    while (sibling.previousElementSibling) {
+                        sibling = sibling.previousElementSibling
+                        if (sibling.tagName === element.tagName) {
+                            index++
+                        }
+                    }
+
+                    parts.unshift(`${tag}[${index}]`)
+                    element = element.parentElement
+                }
+
+                return '//' + parts.join('/')
             }
 
             return getXPath(arguments[0]);
             """
-
-# Script JavaScript para buscar o conteúdo de um elemento a partir de um XPath
-search_XPath =  """
-                function searchXPath(path) {
-                    const element = document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                    return element ? element.textContent : null;
-                }
-
-                return searchXPath(arguments[0]);
-                """
 
 # Função de log que exibe mensagens com horário e nível (INFO, ERROR, etc.)
 def log(level, text):
@@ -93,10 +109,10 @@ def find_xpath(value, driver):
     try:
         # Aguarda até que o elemento esteja presente na página
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, f'//*[self::span or self::div or self::p][contains(normalize-space(.), "{value}")]'))
+            EC.presence_of_element_located((By.XPATH, f'//*/text()[contains(., "{value}")]/parent::*'))
         )
         # Busca elementos que contenham o valor informado
-        elements = driver.find_elements(By.XPATH, f'//*[self::span or self::div or self::p][contains(normalize-space(.), "{value}")]')
+        elements = driver.find_elements(By.XPATH, f'//*/text()[contains(., "{value}")]/parent::*')
 
         if not elements:
             return None
@@ -119,7 +135,8 @@ def search(driver, xpath):
             EC.presence_of_element_located((By.XPATH, xpath))
         )
         # Executa o script JS para obter o conteúdo do elemento        
-        return driver.execute_script(search_XPath, xpath)
+        element = driver.find_element(By.XPATH, xpath)
+        return element.text
 
     except Exception as e:
         log("Search/ERROR", e)
@@ -130,12 +147,13 @@ def save_history(url, value):
     now  = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     with open(f"history.txt", "a", encoding="utf-8") as file:
-        file.write(f"{now}; URL: {url}; {value}\n")
+        file.write(f"{now}; URL: {url}; Valor: {value}\n")
 
     return
 
 # Função principal que monitora um elemento na página e detecta alterações
-def analise(url:str, driver_name:str, rep_time:float, delay:float, refresh:bool, value:str=None, manual_xpath:str=None):
+def analise(url:str, driver_name:str, rep_time:float, delay:float,
+            refresh:bool, email:str, title:str, value:str=None, manual_xpath:str=None):
     """
     Monitora um valor em uma página web e detecta alterações.
 
@@ -145,6 +163,8 @@ def analise(url:str, driver_name:str, rep_time:float, delay:float, refresh:bool,
         rep_time (float): tempo total de execução (minutos)
         delay (float): intervalo entre verificações (segundos)
         refresh (bool): opção para recaregar a página
+        email (str): email que receberá os valores
+        title (str): nome do objeto buscado
         value (str): valor inicial a ser buscado
         manual_xpath (str): XPath a ser utilizado
     """
@@ -172,7 +192,7 @@ def analise(url:str, driver_name:str, rep_time:float, delay:float, refresh:bool,
 
     log("DEBUG", f"XPath: {xpath}")
     log("INFO", "Iniciando análise...")
-    id = 0
+    run_id = 0
     last_value = None
     # Marca o tempo inicial        
     start_time = time.perf_counter()
@@ -184,7 +204,8 @@ def analise(url:str, driver_name:str, rep_time:float, delay:float, refresh:bool,
             if refresh:
                 driver.refresh()
 
-            log("INFO", f"Execução [{id+1}]")
+            log("INFO", f"Execução [{run_id}]")
+            run_id+=1
             # Obtém o valor atual do elemento        
             current_value = search(driver, xpath)
 
@@ -194,23 +215,22 @@ def analise(url:str, driver_name:str, rep_time:float, delay:float, refresh:bool,
                 continue
 
             current_value = current_value.strip()
-            log("INFO", f"Atual: {current_value}")
-            log("INFO", f"Último: {last_value}")
+            log("INFO", f"Valor atual: {current_value}")
+            log("INFO", f"Valor antigo: {last_value}")
 
             # Primeira execução (salva valor inicial)        
             if last_value is None:
+                last_value = current_value
                 save_history(url, current_value)
-                log("INFO", "Valor salvo")
+                time.sleep(delay)
             # Detecta mudança de valor            
             elif current_value != last_value:
                 message = f"""
+                            Valor atual: {current_value}
                             Valor antigo: {last_value}
-                            Valor novo: {current_value}
                             Data: {datetime.now()}
-                            """
-
-                # Futuro envio de notificação (ex: e-mail)        
-                #enviar_email(email, title, message)
+                            """       
+                send(driver, email, title, message)
                 save_history(url, current_value)
                 log("INFO", "Novo valor salvo")
             else:
