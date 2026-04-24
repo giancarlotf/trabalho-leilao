@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoramento de Busca Dados</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body style="padding-bottom: 20px;">
     <h2>🌐 Configurar Monitoramento</h2>
-    
+
     <form id="dataForm">
-        
+
         <div class="form-group">
-            <label for="name">Seu Nome:</label>
+            <label for="name">Nome de Usuário:</label>
             <input type="text" id="name" placeholder="Caio, João, Gabriel, ..." required>
         </div>
 
@@ -22,38 +24,38 @@
         </div>
 
         <div class="form-group">
-            <label for="email">E-mail do Usuário:</label>
+            <label for="email">E-mail:</label>
             <input type="email" id="email" placeholder="exemplo@dominio.com" required>
         </div>
 
         <div class="form-group">
-            <label for="interval">Intervalo de Análise:</label>
-            <input type="text" id="interval" placeholder="Em minutos" required>
+            <label for="interval">Intervalo entre Análises:</label>
+            <input type="text" id="interval" placeholder="Em segundos" required>
         </div>
 
         <div class="form-group">
             <label for="operation">Tempo de Atuação:</label>
-            <input type="text" id="operation" placeholder="Em horas" required>
+            <input type="text" id="operation" placeholder="Em minutos" required>
         </div>
 
         <div class="form-group">
-            <label for="valor">Valor a Monitorar:</label>
-            <input type="text" id="valor" placeholder="Número ou Texto de Referência" required>
+            <label for="tag">Tag (XPath):</label>
+            <input type="text" id="tag" placeholder="Ex: div, span, p, ...">
         </div>
 
         <div class="form-group">
-            <label for="tag">Tag do Elemento:</label>
-            <input type="text" id="tag" placeholder="..." required>
+            <label for="attribute">Atributo (Xpath):</label>
+            <input type="text" id="attribute" placeholder="Ex: id, class, src, ...">
         </div>
-        
+
         <div class="form-group">
-                <label for="attribute">Atributo Xpath:</label>
-                <input type="text" id="attribute" placeholder="Ex: ID, value, ..." required>
+            <label for="valor">Valor a Monitorar / Valor (XPath):</label>
+            <input type="text" id="valor" placeholder="Número ou Texto de Referência / Valor (XPath)" required>
         </div>
-        
+
         <div class="form-group">
             <label for="title">Título do Elemento:</label>
-            <input type="text" id="title" placeholder="EX:  BTC, BRl, USD, ..." required>
+            <input type="text" id="title" placeholder="Ex: BTC, USD, EUR..." required>
         </div>
 
         <div class="form-group checkbox-group">
@@ -67,6 +69,7 @@
 
     <div id="statusMessage"></div>
 
-    <script src="script.js"></script>
+    <script src="popup.js"></script>
 </body>
+
 </html>
