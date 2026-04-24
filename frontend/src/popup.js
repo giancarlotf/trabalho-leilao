@@ -24,16 +24,16 @@ document.getElementById('dataForm').addEventListener('submit', async (e) => {
         title: title,
         interval: interval,
         operation: operation,
-        refresh: isRefreshActive 
+        refresh: isRefreshActive
     };
 
     // 3. Definição do endpoint (URL do seu servidor)
-    const apiUrl = 'http://127.0.0.1:5000/api/dados'; 
+    const apiUrl = 'http://127.0.0.1:5000/api/data';
 
     // 4. Exibição de estado de processamento
     const submitButton = document.getElementById('submitBtn');
     const statusElement = document.getElementById('statusMessage');
-    
+
     submitButton.disabled = true;
     submitButton.innerHTML = 'Enviando...';
     statusElement.textContent = 'Enviando dados para o servidor...';
@@ -48,13 +48,14 @@ document.getElementById('dataForm').addEventListener('submit', async (e) => {
             },
             body: JSON.stringify(dataPayload) // Converte o objeto JavaScript em string JSON
         });
-
-    } catch (error) {
+    }
+    catch (error) {
         // 7. Tratamento de erros de rede (ex: o servidor está fora do ar)
         console.error('Erro de rede ao conectar com o backend:', error);
         statusElement.textContent = '🔴 Erro de conexão. Verifique se o backend está online.';
         statusElement.style.color = 'red';
-    } finally {
+    }
+    finally {
         // 8. Restaura o estado do botão, independentemente do resultado
         submitButton.disabled = false;
         submitButton.innerHTML = 'Salvar Serviço';
