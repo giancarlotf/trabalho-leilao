@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "Monitoramento de Busca Dados",
+    "version": "1.0",
+    "description": "Interface de coleta de dados para enviar informações de busca para um algoritmo local.",
+    
+    "action": {
+        "default_popup": "popup.html"
+    },
+    
+    "permissions": [
+        "activeTab",
+        "storage"
+    ],
+    
+    "host_permissions": [
+        "http://127.0.0.1:5000/*"
+    ]
+}

@@ -1,0 +1,93 @@
+/* Geral e Reset */
+body {
+    font-family: 'Arial', sans-serif;
+    width: 320px; /* Largura ideal para popups de ferramentas */
+    padding: 20px;
+    background-color: #f8f9fa; /* Fundo claro e moderno */
+    color: #333;
+}
+
+/* Cabeçalho */
+h2 {
+    font-size: 1.4em;
+    color: #007bff; /* Azul primário */
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Grupos de Inputs */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Estilo dos Inputs */
+input[type="email"],
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 8px; /* Bordas arredondadas */
+    box-sizing: border-box; /* Garante que padding não aumente a largura */
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-size: 1em;
+}
+
+/* Efeito de foco (quando o usuário clica no input) */
+input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none; /* Remove o contorno padrão do navegador */
+}
+
+/* Botão de Ação */
+#submitBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745; /* Verde de sucesso */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.1s;
+    margin-top: 10px;
+}
+
+#submitBtn:hover {
+    background-color: #218838;
+}
+
+#submitBtn:active {
+    transform: scale(0.99); /* Feedback de clique */
+}
+
+/* Status Message */
+#statusMessage {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    min-height: 20px; /* Reserva espaço para evitar saltos no layout */
+}
+
+.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento de Busca Dados</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="padding-bottom: 20px;">
+    <h2>🌐 Configurar Monitoramento</h2>
+    
+    <form id="dataForm">
+        
+        <div class="form-group">
+            <label for="name">Seu Nome:</label>
+            <input type="text" id="name" placeholder="Caio, João, Gabriel, ..." required>
+        </div>
+
+        <div class="form-group">
+            <label for="url">URL de Origem:</label>
+            <input type="text" id="url" placeholder="https://exemplo.com/pagina" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">E-mail do Usuário:</label>
+            <input type="email" id="email" placeholder="exemplo@dominio.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="interval">Intervalo de Análise:</label>
+            <input type="text" id="interval" placeholder="Em minutos" required>
+        </div>
+
+        <div class="form-group">
+            <label for="operation">Tempo de Atuação:</label>
+            <input type="text" id="operation" placeholder="Em horas" required>
+        </div>
+
+        <div class="form-group">
+            <label for="valor">Valor a Monitorar:</label>
+            <input type="text" id="valor" placeholder="Número ou Texto de Referência" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tag">Tag do Elemento:</label>
+            <input type="text" id="tag" placeholder="..." required>
+        </div>
+        
+        <div class="form-group">
+                <label for="attribute">Atributo Xpath:</label>
+                <input type="text" id="attribute" placeholder="Ex: ID, value, ..." required>
+        </div>
+        
+        <div class="form-group">
+            <label for="title">Título do Elemento:</label>
+            <input type="text" id="title" placeholder="EX:  BTC, BRl, USD, ..." required>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="refresh" name="refresh">
+            <label for="refresh">Refresh</label>
+        </div>
+
+        <button type="submit" id="submitBtn">Iniciar Monitoramento</button>
+
+    </form>
+
+    <div id="statusMessage"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
