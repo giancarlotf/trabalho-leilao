@@ -13,9 +13,9 @@ def test_validate_url_sem_http():
     assert validate_url("google.com") == 1
 
 
-@patch("src.seu_arquivo.webdriver.Chrome")
-@patch("src.seu_arquivo.ChromeDriverManager")
-@patch("src.seu_arquivo.webdriver.chrome.service.Service")
+@patch("backend.src.web_scraping.webdriver.Chrome")
+@patch("backend.src.web_scraping.ChromeDriverManager")
+@patch("backend.src.web_scraping.webdriver.chrome.service.Service")
 def test_set_driver_chrome(mock_service, mock_manager, mock_driver):
     mock_manager.return_value.install.return_value = "/fake/path"
 
@@ -29,7 +29,7 @@ def test_set_driver_invalido():
     assert driver is None
 
 
-@patch("src.seu_arquivo.WebDriverWait")
+@patch("backend.src.web_scraping.WebDriverWait")
 def test_find_xpath_sucesso(mock_wait):
     mock_driver = MagicMock()
 
@@ -42,7 +42,7 @@ def test_find_xpath_sucesso(mock_wait):
     assert xpath == "//div[1]"
 
 
-@patch("src.seu_arquivo.WebDriverWait")
+@patch("backend.src.web_scraping.WebDriverWait")
 def test_find_xpath_nenhum(mock_wait):
     mock_driver = MagicMock()
     mock_driver.find_elements.return_value = []
@@ -52,7 +52,7 @@ def test_find_xpath_nenhum(mock_wait):
     assert xpath is None
 
 
-@patch("src.seu_arquivo.WebDriverWait")
+@patch("backend.src.web_scraping.WebDriverWait")
 def test_search_sucesso(mock_wait):
     mock_driver = MagicMock()
     mock_element = MagicMock()
@@ -63,7 +63,7 @@ def test_search_sucesso(mock_wait):
     assert result == "valor encontrado"
 
 
-@patch("src.seu_arquivo.WebDriverWait")
+@patch("backend.src.web_scraping.WebDriverWait")
 def test_search_erro(mock_wait):
     mock_driver = MagicMock()
     mock_driver.find_element.side_effect = Exception("erro")
@@ -79,10 +79,10 @@ def test_save_history(mock_open):
     handle.write.assert_called()
 
 
-@patch("src.seu_arquivo.send_email")
-@patch("src.seu_arquivo.search")
-@patch("src.seu_arquivo.find_xpath")
-@patch("src.seu_arquivo.set_driver")
+@patch("backend.src.web_scraping.send_email")
+@patch("backend.src.web_scraping.search")
+@patch("backend.src.web_scraping.find_xpath")
+@patch("backend.src.web_scraping.set_driver")
 def test_analise_fluxo_basico(mock_driver, mock_find, mock_search, mock_email):
     mock_driver_instance = MagicMock()
     mock_driver.return_value = mock_driver_instance
