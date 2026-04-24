@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import time
 
 def send_email(driver, email, title, message):
@@ -21,9 +22,8 @@ def send_email(driver, email, title, message):
 
         time.sleep(2)
 
-        # Botão enviar
-        send_button = driver.find_element(By.XPATH, "//div[@aria-label='Enviar (Ctrl-Enter)']")
-        send_button.click()
+        # Enviar
+        body.send_keys(Keys.CONTROL, Keys.ENTER)
 
         print("Email enviado com sucesso")
 
