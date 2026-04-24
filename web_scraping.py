@@ -56,12 +56,17 @@ get_XPath = """
 # Função de log que exibe mensagens com horário e nível (INFO, ERROR, etc.)
 def log(level, text):
     now = datetime.now().strftime("%H:%M:%S")
-    print(f"[{now}] [{level}]: {text}")
+    log_text = f"[{now}] [{level}]: {text}"
+    print(log_text)
+
+    with open(f"log.txt", "a", encoding="utf-8") as file:
+        file.write(log_text)
+
     return
 
 # Valida se a URL fornecida é válida
 def validate_url(url: str):
-    if not url or url == ("http://", "https://"):
+    if not url or url in ("http://", "https://"):
         log("URL/ERROR", "Informe uma URL válida")
         return 1
     if not url.startswith("http"):
@@ -76,7 +81,7 @@ def set_driver(driver_name: str):
         "chrome": (webdriver.chrome.service.Service, ChromeDriverManager, webdriver.Chrome),
         "edge": (webdriver.edge.service.Service, EdgeChromiumDriverManager, webdriver.Edge),
         "firefox": (webdriver.firefox.service.Service, GeckoDriverManager, webdriver.Firefox)
-        }
+    }
 
     try: 
         # Seleciona o serviço, gerenciador e classe do driver
@@ -223,6 +228,7 @@ def analise(url:str, driver_name:str, rep_time:float, delay:float,
                 last_value = current_value
                 save_history(url, current_value)
                 time.sleep(delay)
+                continue
             # Detecta mudança de valor            
             elif current_value != last_value:
                 message = f"""
