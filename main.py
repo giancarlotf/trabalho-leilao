@@ -1,4 +1,4 @@
-import web_scraping as ws
+import src.web_scraping as ws
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -11,26 +11,26 @@ CORS(app)
 # Classe responsável por armazenar e processar os dados recebidos do frontend
 class datahandler:
 
-    def __init__(self , data: dict):
-        # Converte automaticamente o dicionário recebido (JSON) em atributos da classe
-        self.__dict__.update(data)
+    def __init__(self):
+        self.data = None
 
-    # Endpoint que recebe os dados enviados pelo frontend via requisição POST
-    @app.route('/app/dados', methods=['POST'])
-    def receive_data():
+    def receive_data(self, data):
+        self.data = data
 
-        # Obtém os dados enviados no formato JSON
-        data_JSON = request.get_json()
-        # Cria uma instância da classe com os dados recebidos
-        data_instace = datahandler(**data_JSON)
-        # Chama o método responsável por validar e iniciar o processo
-        data_instace.setup()
+        for key in [
+            "name", "url", "email", "tag", "attribute",
+            "value", "interval", "operation", "title", "refresh"
+        ]:
+            setattr(self, key, data.get(key))
 
     # Método responsável por validar os dados e preparar o scraping
     def setup(self):
-
+        driver_name = "chrome"
+        
         # Variável que armazenará o XPath (caso seja montado)
         xpath = None
+        self.interval = float(self.interval)
+        self.operation = float(self.operation)
 
         # Validação do nome do usuário
         if len(self.name) < 3 or not self.name.replace(" ", "").isalpha():
@@ -70,12 +70,22 @@ class datahandler:
             ws.log("User/INFO", f"Valor inicial: {self.value}")             
 
         # Logs de configuração da execução
-        ws.log("User/INFO", f"Driver selecionado: chrome")
+        ws.log("User/INFO", f"Driver selecionado: {driver_name}")
         ws.log("User/INFO", f"Tempo de operação: {self.operation}")
         ws.log("User/INFO", f"Intervalo entre leituras: {self.interval}")
 
         # Chamada da função principal de scraping
-        ws.analise(self.url, "chrome", self.operation, self.interval, self.refresh, self.value, manual_xpath=xpath)     
+        ws.analise(self.url, driver_name, self.operation, self.interval,
+                   self.refresh, self.email, self.title, self.value, manual_xpath=xpath)
+
+data_handler = DataHandler()
+
+@app.route('/api/data', methods=['POST'])
+def receive_data():
+    data_JSON = request.get_json()
+    data_handler.receive_data(data_JSON)
+    data_handler.setup()
+    return {"status": "ok"}, 200
 
 # Inicializa o servidor Flask em modo de debug
 if __name__ == '__main__':
