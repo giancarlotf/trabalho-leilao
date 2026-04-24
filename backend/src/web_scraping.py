@@ -60,7 +60,7 @@ def log(level, text):
     print(log_text)
 
     with open(f"log.txt", "a", encoding="utf-8") as file:
-        file.write(log_text)
+        file.write(f"{log_text}\n")
 
     return
 
