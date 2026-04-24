@@ -1,4 +1,3 @@
-from datetime import date, datetime
 import web_scraping as ws
 from flask import Flask, request, jsonify
 from flask_cors import CORS
