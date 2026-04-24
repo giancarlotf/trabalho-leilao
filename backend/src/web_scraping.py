@@ -1,4 +1,4 @@
-from send_email import send
+from src.send_gmail import send_email
 
 from datetime import datetime
 
@@ -236,7 +236,7 @@ def analise(url:str, driver_name:str, rep_time:float, delay:float,
                             Valor antigo: {last_value}
                             Data: {datetime.now()}
                             """       
-                send(driver, email, title, message)
+                send_email(driver, email, title, message)
                 save_history(url, current_value)
                 log("INFO", "Novo valor salvo")
             else:
